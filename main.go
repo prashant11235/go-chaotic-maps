@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"fmt"
 	"gochaoticmaps/continuous"
+	"gochaoticmaps/models"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 
 func visualize(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
-	pts := continuous.GenerateMapPoints()
+	pts := (*continuous.NewLorenz()).GenerateMapPoints()
 	path := genPath(pts)
 
 	s := svg.New(w)
@@ -29,7 +30,7 @@ func visualize(w http.ResponseWriter, req *http.Request) {
 	s.End()
 }
 
-func genPath(pts []continuous.Point) (string) {
+func genPath(pts []models.Point) (string) {
 	path := "M " + fmt.Sprintf("%f", transformX(pts[0].X)) + "," + fmt.Sprintf("%f", transformZ(pts[0].Z)) + " "
 	for _, pt := range pts {
 		currX := transformX(pt.X)
@@ -41,9 +42,9 @@ func genPath(pts []continuous.Point) (string) {
 }
 
 func transformX(x float64) float64 {
-	return 250 + 8 * x;
+	return 450 + 20 * x;
 }
 
 func transformZ(z float64) float64 {
-	return 50 + 8 * z;
+	return 50 + 20 * z;
 }

@@ -1,32 +1,29 @@
 package continuous
 
-type Point struct {
-	X float64 
-	Y float64
-	Z float64
+import (
+	"gochaoticmaps/models"
+)
+
+type Lorenz struct {
+	sigma float64
+	rho float64
+	beta float64
+
+	init models.Point
+	dt float64
+	numSteps int
 }
 
-var maxSteps = 5000
-
-// Constants
-var sigma = float64(10)
-var rho = float64(28)
-var beta = 8.0 / 3.0
-
 // Initial values
-var x = 0.1
-var y = 0.1
-var z = 0.1
+var x float64
+var y float64
+var z float64
 
-// Time
-var dt = 0.01
-
-
-func GenerateMapPoints() ([]Point) {
+func (l Lorenz) GenerateMapPoints() ([]models.Point) {
 	i := 0 
-	ptArr := make([]Point, maxSteps)
-	for i < maxSteps {
-		pt := calcNextPoint()
+	ptArr := make([]models.Point, l.numSteps)
+	for i < l.numSteps {
+		pt := l.calcNextPoint()
 		ptArr[i] = pt
 		i++
 	} 
@@ -34,20 +31,40 @@ func GenerateMapPoints() ([]Point) {
 	return ptArr 
 }
 
-func calcNextPoint() (Point) {
-	dx := sigma * (y - x)
-	dy := x * (rho - z) - y
-	dz := x * y - beta * z
+func (l Lorenz) calcNextPoint() (models.Point) {
+	
+	dx := l.sigma * (y - x)
+	dy := x * (l.rho -z) - y
+	dz := x * y - l.beta * z
 
-	x += dx * dt
-	y += dy * dt 
-	z += dz * dt
+	x += dx * l.dt
+	y += dy * l.dt
+	z += dz * l.dt
 
-	pt := Point {
+	pt := models.Point {
 		X: x, 
 		Y: y,
 		Z: z,
 	}
 
 	return pt 
+}
+
+func NewLorenz() *Lorenz {
+	x = 0.1
+	y = 0.1
+	z = 0.1
+
+	return &Lorenz{
+		sigma: 10.0,
+		rho: 28.0,
+		beta: 8.0/3.0,
+		init: models.Point {
+			X: 0.1,
+			Y: 0.1,
+			Z: 0.1,
+		},
+		dt: 0.01,
+		numSteps: 2000,
+	}
 }
