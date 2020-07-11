@@ -65,6 +65,6 @@ func NewLorenz() *Lorenz {
 			Z: 0.1,
 		},
 		dt: 0.01,
-		numSteps: 2000,
+		numSteps: 10000,
 	}
 }

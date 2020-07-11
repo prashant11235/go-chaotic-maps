@@ -2,49 +2,38 @@ package main
 
 import (
 	"log"
+	"github.com/gorilla/mux"
 	"github.com/ajstarks/svgo"
 	"net/http"
-	"fmt"
 	"gochaoticmaps/continuous"
-	"gochaoticmaps/models"
+	"gochaoticmaps/draw"
 )
 
 func main() {
-	http.Handle("/visualize", http.HandlerFunc(visualize))
-	err := http.ListenAndServe(":2003", nil)
+	r := mux.NewRouter()
+	r.HandleFunc("/visualize/{map}", VisualizeHandler)
+	err := http.ListenAndServe(":2003", r)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
 
-func visualize(w http.ResponseWriter, req *http.Request) {
+func VisualizeHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	mapName := vars["map"]
+	w.WriteHeader(http.StatusOK)
+	visualize(w, r, mapName)
+}
+
+func visualize(w http.ResponseWriter, req *http.Request, mapName string) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	pts := (*continuous.NewLorenz()).GenerateMapPoints()
-	path := genPath(pts)
+
+	draw := *draw.NewDraw()
+	path := draw.GenPath(pts)
 
 	s := svg.New(w)
-	s.Start(1000, 1000)
-	//s.Circle(250, 250, 250, "fill:none;stroke:black")
+	s.Start(draw.SizeX, draw.SizeY)
 	s.Path(path, "fill:none;stroke:black")
-	//s.Path("M150 0 L75 200 L225 200 Z", "fill:none;stroke:black")
 	s.End()
-}
-
-func genPath(pts []models.Point) (string) {
-	path := "M " + fmt.Sprintf("%f", transformX(pts[0].X)) + "," + fmt.Sprintf("%f", transformZ(pts[0].Z)) + " "
-	for _, pt := range pts {
-		currX := transformX(pt.X)
-		currZ := transformZ(pt.Z)
-		
-		path +=  " L " + fmt.Sprintf("%f", currX) + "," + fmt.Sprintf("%f", currZ)
-	}
-	return path 
-}
-
-func transformX(x float64) float64 {
-	return 450 + 20 * x;
-}
-
-func transformZ(z float64) float64 {
-	return 50 + 20 * z;
 }

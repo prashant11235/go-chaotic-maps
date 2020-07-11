@@ -2,15 +2,19 @@ package discrete
 
 import (
 	"math"
+	"gochaoticmaps/models"
 )
 
 // Constants
-var alpha = float64(1)
-var beta = float64(-1)
-var delta = float64(0.2)
-var gamma = float64(0.3)
-var omega = float64(1)
-var maxSteps = 2500
+
+type Duffing struct {
+	alpha float64
+	beta float64
+	delta float64
+	gamma float64
+	omega float64
+	numSteps int
+}
 
 // Initial values
 var x = 0.0
@@ -20,12 +24,7 @@ var t = 0.0
 // Time variation
 var dt = 0.04
 
-type Point struct {
-	X float64 
-	Y float64
-}
-
-func GeneratePoints() ([]Point) {
+func GeneratePoints() ([]models.Point) {
 	i := 0 
 	ptArr := make([]Point, maxSteps)
 	for i < maxSteps {
@@ -38,7 +37,7 @@ func GeneratePoints() ([]Point) {
 
 }
 
-func calcNextPoint() (Point) {
+func calcNextPoint() (models.Point) {
 	dx := float64(y)
 	dy := -delta*float64(y) - beta*float64(x) - alpha*float64(x*x*x) + gamma*(float64(math.Cos(omega*t)))
 	
@@ -47,10 +46,31 @@ func calcNextPoint() (Point) {
 	
 	t += dt
 	
-	pt := Point {
+	pt := models.Point {
 		X: x, 
 		Y: y,
 	}
 
 	return pt 
+}
+
+func NewDuffing() *Duffing {
+	x = 0.1
+	y = 0.1
+	z = 0.1
+
+	return &Duffing{
+		alpha: 10.0,
+		beta: 28.0,
+		delta: 8.0/3.0,
+		gamma: 1,
+		omega: 2,
+		init: models.Point {
+			X: 0.1,
+			Y: 0.1,
+			Z: 0.1,
+		},
+		dt: 0.01,
+		numSteps: 10000,
+	}
 }

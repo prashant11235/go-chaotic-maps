@@ -1,2 +1,4 @@
 github.com/ajstarks/svgo v0.0.0-20200320125537-f189e35d30ca h1:kWzLcty5V2rzOqJM7Tp/MfSX0RMSI1x4IOLApEefYxA=
 github.com/ajstarks/svgo v0.0.0-20200320125537-f189e35d30ca/go.mod h1:K08gAheRH3/J6wwsYMMT4xOr94bZjxIelGM0+d/wbFw=
+github.com/gorilla/mux v1.7.4 h1:VuZ8uybHlWmqV03+zRzdwKL4tUnIp1MAQtp1mIFE1bc=
+github.com/gorilla/mux v1.7.4/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
