@@ -2,7 +2,12 @@ package continuous
 
 import (
 	"gochaoticmaps/models"
+	"gochaoticmaps/vis"
 )
+
+type LorenzVisContext struct {
+	vp vis.VisualizeParams
+}
 
 type Lorenz struct {
 	sigma float64
@@ -14,57 +19,96 @@ type Lorenz struct {
 	numSteps int
 }
 
-// Initial values
-var x float64
-var y float64
-var z float64
-
 func (l Lorenz) GenerateMapPoints() ([]models.Point) {
 	i := 0 
+	currPt := l.init
 	ptArr := make([]models.Point, l.numSteps)
 	for i < l.numSteps {
-		pt := l.calcNextPoint()
+		pt := l.calcNextPoint(currPt)
 		ptArr[i] = pt
+		currPt = pt 
 		i++
 	} 
 
 	return ptArr 
 }
 
-func (l Lorenz) calcNextPoint() (models.Point) {
+func (l Lorenz) calcNextPoint(currPt models.Point) (models.Point) {
 	
-	dx := l.sigma * (y - x)
-	dy := x * (l.rho -z) - y
-	dz := x * y - l.beta * z
+	dx := l.sigma * (currPt.Y - currPt.X)
+	dy := currPt.X * (l.rho - currPt.Z) - currPt.Y
+	dz := currPt.X * currPt.Y - l.beta * currPt.Z
 
-	x += dx * l.dt
-	y += dy * l.dt
-	z += dz * l.dt
+	x := currPt.X + dx * l.dt
+	y := currPt.Y + dy * l.dt
+	z := currPt.Z + dz * l.dt
+	t := currPt.T + l.dt 
 
 	pt := models.Point {
 		X: x, 
 		Y: y,
 		Z: z,
+		T: t,
 	}
 
 	return pt 
 }
 
 func NewLorenz() *Lorenz {
-	x = 0.1
-	y = 0.1
-	z = 0.1
-
 	return &Lorenz{
 		sigma: 10.0,
 		rho: 28.0,
 		beta: 8.0/3.0,
 		init: models.Point {
 			X: 0.1,
-			Y: 0.1,
-			Z: 0.1,
+			Y: 0.0,
+			Z: 0.0,
+			T: 0.0,
 		},
 		dt: 0.01,
 		numSteps: 10000,
 	}
+}
+
+func GetLorenzVisualizeContext() vis.VisualizeContext {
+	lorenzVis := LorenzVisContext{}
+	lorenzVis.vp = vis.VisualizeParams {
+			SizeX: 750,
+			SizeY: 750,
+			IgnoreAxis: "Y",
+	}
+	
+	return lorenzVis
+}
+
+func (l LorenzVisContext) ScaleX(x float64) float64 {
+	return l.InitX(l.vp.SizeX) + l.ScaleFactor(l.vp.SizeX) * x;
+}
+
+func (l LorenzVisContext) ScaleY(y float64) float64 {
+	return l.InitY(l.vp.SizeX) + l.ScaleFactor(l.vp.SizeX) * y;
+}
+
+func (l LorenzVisContext) ScaleZ(z float64) float64 {
+	return l.InitZ(l.vp.SizeX) + l.ScaleFactor(l.vp.SizeX) * z;
+}
+
+func (l LorenzVisContext) VisualizeParams() vis.VisualizeParams {
+	return l.vp
+}
+
+func (l LorenzVisContext) InitX(x float64) float64 {
+	return l.vp.SizeX/2
+}
+
+func (l LorenzVisContext) InitY(y float64) float64 {
+	return l.vp.SizeX/2
+}
+
+func (l LorenzVisContext) InitZ(z float64) float64 {
+	return 5
+}
+
+func (l LorenzVisContext) ScaleFactor(sizeX float64) float64 {
+	return sizeX/55
 }

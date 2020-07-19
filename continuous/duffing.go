@@ -1,6 +1,7 @@
-package discrete
+package continuous
 
 import (
+	"math"
 	"gochaoticmaps/models"
 	"gochaoticmaps/vis"
 )
@@ -11,59 +12,64 @@ type DuffingVisContext struct {
 }
 
 type Duffing struct {
-	a float64
-	b float64
-	init models.Point 
+	alpha float64
+	beta float64
+	delta float64
+	gamma float64
+	omega float64
+	init models.Point
 	numSteps int
+	dt float64
+	currTime float64
 }
-
-// Initial values
-var x = 0.1
-var y = 0.1
-
-// Time variation
-var dt = 0.04
 
 func (d Duffing) GenerateMapPoints() ([]models.Point) {
 	i := 0 
+	currPt := d.init 
+	currTime := d.currTime
 	ptArr := make([]models.Point, d.numSteps)
 	for i < d.numSteps {
-		pt := d.calcNextPoint()
+		pt := d.calcNextPoint(currPt, currTime)
 		ptArr[i] = pt
+		currPt = pt 
+		currTime += d.dt
 		i++
 	} 
 
-	return ptArr
+	return ptArr 
 
 }
 
-func (d Duffing) calcNextPoint() (models.Point) {
-	xnext := y
-	ynext := -d.b*x + d.a*y - y*y*y
+func (d Duffing) calcNextPoint(currPt models.Point, currTime float64) (models.Point) {
+	dx := float64(currPt.Y)
+	dy := -d.delta*float64(currPt.Y) - d.beta*float64(currPt.X) - d.alpha*float64(currPt.X*currPt.X*currPt.X) + d.gamma*(float64(math.Cos(d.omega*currTime)))
+	
+	x := currPt.X + dx * d.dt
+	y := currPt.Y + dy * d.dt
 	
 	pt := models.Point {
-		X: xnext, 
-		Y: ynext,
+		X: x, 
+		Y: y,
 	}
-
-	x = xnext
-	y = ynext 
 
 	return pt 
 }
 
 func NewDuffing() *Duffing {
-	x = 0.1
-	y = 0.1
-
 	return &Duffing{
-		a: 2.75,
-		b: 0.2,
+		alpha: 1.0,
+		beta: -1.0,
+		delta: 0.2,
+		gamma: 0.3,
+		omega: 1.0,
 		init: models.Point {
-			X: 0.1,
-			Y: 0.1,
+			X: 0.0,
+			Y: 0.0,
+			Z: 0.0,
 		},
-		numSteps: 1000,
+		dt: 0.04,
+		currTime: 0,
+		numSteps: 50000,
 	}
 }
 
@@ -79,11 +85,11 @@ func GetDuffingVisualizeContext() vis.VisualizeContext {
 }
 
 func (l DuffingVisContext) ScaleX(x float64) float64 {
-	return l.InitX(l.vp.SizeX) + 150 * x;
+	return l.InitX(l.vp.SizeX) + 200 * x;
 }
 
 func (l DuffingVisContext) ScaleY(y float64) float64 {
-	return l.InitY(l.vp.SizeX) + 150 * y;
+	return l.InitY(l.vp.SizeX) + 200 * y;
 }
 
 func (l DuffingVisContext) ScaleZ(z float64) float64 {

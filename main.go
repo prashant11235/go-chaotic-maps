@@ -2,11 +2,14 @@ package main
 
 import (
 	"log"
+	"strings"
+	"errors"
 	"github.com/gorilla/mux"
-	"github.com/ajstarks/svgo"
 	"net/http"
 	"gochaoticmaps/continuous"
-	"gochaoticmaps/draw"
+	"gochaoticmaps/discrete"
+	"gochaoticmaps/models"
+	"gochaoticmaps/vis"
 )
 
 func main() {
@@ -22,18 +25,32 @@ func VisualizeHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	mapName := vars["map"]
 	w.WriteHeader(http.StatusOK)
-	visualize(w, r, mapName)
+	draw(w, r, mapName)
 }
 
-func visualize(w http.ResponseWriter, req *http.Request, mapName string) {
+func draw(w http.ResponseWriter, req *http.Request, mapName string) {
 	w.Header().Set("Content-Type", "image/svg+xml")
-	pts := (*continuous.NewLorenz()).GenerateMapPoints()
+	mapObj, visctxt, err := instantiate(mapName)
+	if err != nil {
+		log.Fatal(err)
+	} else {
 
-	draw := *draw.NewDraw()
-	path := draw.GenPath(pts)
+		// Generate visualization object
+		pathVis := *vis.NewPathVisualizer()
+		pathVis.Visualize(mapObj, visctxt, w)
+	}
+}
 
-	s := svg.New(w)
-	s.Start(draw.SizeX, draw.SizeY)
-	s.Path(path, "fill:none;stroke:black")
-	s.End()
+func instantiate(mapName string) (models.ChaoticMap, vis.VisualizeContext, error) {
+	switch strings.ToLower(mapName) {
+	case "lorenz":
+		return *continuous.NewLorenz(), continuous.GetLorenzVisualizeContext() , nil
+	case "duffing":
+		return *discrete.NewDuffing(), discrete.GetDuffingVisualizeContext(), nil
+	case "duffingcont":
+		return *continuous.NewDuffing(), continuous.GetDuffingVisualizeContext(), nil
+	default:
+		log.Fatal("Can't process !!")
+		return nil, nil, errors.New("Can't process")
+	}
 }
