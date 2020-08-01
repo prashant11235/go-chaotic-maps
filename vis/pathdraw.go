@@ -13,11 +13,13 @@ type PathVisualizer struct {
 
 func (pv PathVisualizer) Visualize(mapObj models.ChaoticMap, visctxt VisualizeContext, w http.ResponseWriter) {
 	pts := mapObj.GenerateMapPoints()
-
-	path := pv.GenPath(pts, visctxt)
+	//fmt.Println(pts)
+	scaledPts := ScalePoints(pts, visctxt.VisualizeParams().Size.SizeX, visctxt.VisualizeParams().Size.SizeX, visctxt.VisualizeParams().Size.SizeX)
+	//fmt.Println(scaledPts)
+	path := pv.GenPath(scaledPts, visctxt)
 
 	s := svg.New(w)
-	s.Start(int(visctxt.VisualizeParams().SizeX), int(visctxt.VisualizeParams().SizeY))
+	s.Start(int(visctxt.VisualizeParams().Size.SizeX), int(visctxt.VisualizeParams().Size.SizeY))
 	s.Path(path, "fill:none;stroke:black;stroke-width:0.2")
 	s.End()
 }
@@ -25,11 +27,11 @@ func (pv PathVisualizer) Visualize(mapObj models.ChaoticMap, visctxt VisualizeCo
 func (pv PathVisualizer) GenPath(pts []models.Point, visctxt VisualizeContext) (string) {
 	path := ""
 	if visctxt.VisualizeParams().IgnoreAxis == "X" {
-		path += "M " + fmt.Sprintf("%f", visctxt.ScaleY(pts[0].X)) + "," + fmt.Sprintf("%f", visctxt.ScaleZ(pts[0].Z)) + " "
+		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
 	} else if visctxt.VisualizeParams().IgnoreAxis == "Y" {
-		path += "M " + fmt.Sprintf("%f", visctxt.ScaleX(pts[0].X)) + "," + fmt.Sprintf("%f", visctxt.ScaleZ(pts[0].Z)) + " "
+		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
 	} else if visctxt.VisualizeParams().IgnoreAxis == "Z" {
-		path += "M " + fmt.Sprintf("%f", visctxt.ScaleX(pts[0].X)) + "," + fmt.Sprintf("%f", visctxt.ScaleY(pts[0].Z)) + " "
+		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
 	}
 	
 	for _, pt := range pts {
@@ -37,14 +39,14 @@ func (pv PathVisualizer) GenPath(pts []models.Point, visctxt VisualizeContext) (
 		currY := 0.0
 		
 		if visctxt.VisualizeParams().IgnoreAxis == "X" {
-			currX = visctxt.ScaleY(pt.Y)
-			currY = visctxt.ScaleZ(pt.Z)
+			currX = pt.Y
+			currY = pt.Z
 		} else if visctxt.VisualizeParams().IgnoreAxis == "Y" {
-			currX = visctxt.ScaleX(pt.X)
-			currY = visctxt.ScaleZ(pt.Z)
+			currX = pt.X
+			currY = pt.Z
 		} else if visctxt.VisualizeParams().IgnoreAxis == "Z" {
-			currX = visctxt.ScaleX(pt.X)
-			currY = visctxt.ScaleY(pt.Y)
+			currX = pt.X
+			currY = pt.Y
 		}
 		
 		path +=  " L " + fmt.Sprintf("%f", currX) + "," + fmt.Sprintf("%f", currY)

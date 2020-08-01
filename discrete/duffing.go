@@ -2,13 +2,7 @@ package discrete
 
 import (
 	"gochaoticmaps/models"
-	"gochaoticmaps/vis"
 )
-
-// Constants
-type DuffingVisContext struct {
-	vp vis.VisualizeParams
-}
 
 type Duffing struct {
 	a float64
@@ -65,47 +59,4 @@ func NewDuffing() *Duffing {
 		},
 		numSteps: 1000,
 	}
-}
-
-func GetDuffingVisualizeContext() vis.VisualizeContext {
-	lorenzVis := DuffingVisContext{}
-	lorenzVis.vp = vis.VisualizeParams {
-			SizeX: 750,
-			SizeY: 750,
-			IgnoreAxis: "Z",
-	}
-	
-	return lorenzVis
-}
-
-func (l DuffingVisContext) ScaleX(x float64) float64 {
-	return l.InitX(l.vp.SizeX) + 150 * x;
-}
-
-func (l DuffingVisContext) ScaleY(y float64) float64 {
-	return l.InitY(l.vp.SizeX) + 150 * y;
-}
-
-func (l DuffingVisContext) ScaleZ(z float64) float64 {
-	return l.InitZ(l.vp.SizeX) + 10 * z;
-}
-
-func (l DuffingVisContext) VisualizeParams() vis.VisualizeParams {
-	return l.vp
-}
-
-func (l DuffingVisContext) InitX(x float64) float64 {
-	return l.vp.SizeX/2
-}
-
-func (l DuffingVisContext) InitY(y float64) float64 {
-	return l.vp.SizeX/2
-}
-
-func (l DuffingVisContext) InitZ(z float64) float64 {
-	return l.vp.SizeX/2
-}
-
-func (l DuffingVisContext) ScaleFactor(sizeX float64) float64 {
-	return sizeX/55
 }

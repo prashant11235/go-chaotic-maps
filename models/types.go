@@ -8,13 +8,9 @@ type Point struct {
 }
 	
 type MapSize struct {
-	SizeX float64
-	SizeY float64
-}
-
-type MapInit struct {
-	X float64
-	Y float64 
+	SizeX int
+	SizeY int
+	SizeZ int
 }
 
 type ChaoticMap interface {

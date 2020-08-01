@@ -44,11 +44,13 @@ func draw(w http.ResponseWriter, req *http.Request, mapName string) {
 func instantiate(mapName string) (models.ChaoticMap, vis.VisualizeContext, error) {
 	switch strings.ToLower(mapName) {
 	case "lorenz":
-		return *continuous.NewLorenz(), continuous.GetLorenzVisualizeContext() , nil
+		return *continuous.NewLorenz(), vis.GetDefaultVisualizeContext(), nil
 	case "duffing":
-		return *discrete.NewDuffing(), discrete.GetDuffingVisualizeContext(), nil
+		return *discrete.NewDuffing(), vis.GetDefaultVisualizeContext(), nil
 	case "duffingcont":
-		return *continuous.NewDuffing(), continuous.GetDuffingVisualizeContext(), nil
+		return *continuous.NewDuffing(), vis.GetDefaultVisualizeContext(), nil
+	case "thomas":
+		return *continuous.NewThomas(), vis.GetDefaultVisualizeContext(), nil
 	default:
 		log.Fatal("Can't process !!")
 		return nil, nil, errors.New("Can't process")
