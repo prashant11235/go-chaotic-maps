@@ -8,22 +8,18 @@ type Duffing struct {
 	a float64
 	b float64
 	init models.Point 
+	dt float64
 	numSteps int
 }
 
-// Initial values
-var x = 0.1
-var y = 0.1
-
-// Time variation
-var dt = 0.04
-
 func (d Duffing) GenerateMapPoints() ([]models.Point) {
 	i := 0 
+	currPt := d.init
 	ptArr := make([]models.Point, d.numSteps)
 	for i < d.numSteps {
-		pt := d.calcNextPoint()
+		pt := d.calcNextPoint(currPt)
 		ptArr[i] = pt
+		currPt = pt 
 		i++
 	} 
 
@@ -31,25 +27,18 @@ func (d Duffing) GenerateMapPoints() ([]models.Point) {
 
 }
 
-func (d Duffing) calcNextPoint() (models.Point) {
-	xnext := y
-	ynext := -d.b*x + d.a*y - y*y*y
+func (d Duffing) calcNextPoint(currPt models.Point) (models.Point) {
+	xnext := currPt.Y
+	ynext := -d.b*currPt.X + d.a*currPt.Y - currPt.Y*currPt.Y*currPt.Y
 	
 	pt := models.Point {
 		X: xnext, 
 		Y: ynext,
 	}
-
-	x = xnext
-	y = ynext 
-
 	return pt 
 }
 
 func NewDuffing() *Duffing {
-	x = 0.1
-	y = 0.1
-
 	return &Duffing{
 		a: 2.75,
 		b: 0.2,
@@ -57,6 +46,7 @@ func NewDuffing() *Duffing {
 			X: 0.1,
 			Y: 0.1,
 		},
+		dt: 0.01,
 		numSteps: 1000,
 	}
 }

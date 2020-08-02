@@ -36,7 +36,7 @@ func draw(w http.ResponseWriter, req *http.Request, mapName string) {
 	} else {
 
 		// Generate visualization object
-		pathVis := *vis.NewPathVisualizer()
+		pathVis := *vis.NewCircleVisualizer()
 		pathVis.Visualize(mapObj, visctxt, w)
 	}
 }
@@ -51,6 +51,12 @@ func instantiate(mapName string) (models.ChaoticMap, vis.VisualizeContext, error
 		return *continuous.NewDuffing(), vis.GetDefaultVisualizeContext(), nil
 	case "thomas":
 		return *continuous.NewThomas(), vis.GetDefaultVisualizeContext(), nil
+	case "henon":
+		return *discrete.NewHenon(), vis.GetDefaultVisualizeContext(), nil
+	case "kaplanyorke":
+		return *discrete.NewKaplanYorke(), vis.GetDefaultVisualizeContext(), nil
+	case "peterdejong":
+		return *discrete.NewPeterDeJong(), vis.GetDefaultVisualizeContext(), nil
 	default:
 		log.Fatal("Can't process !!")
 		return nil, nil, errors.New("Can't process")

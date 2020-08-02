@@ -24,6 +24,7 @@ func ScalePoints(pts []models.Point, sizeX int, sizeY int, sizeZ int) []models.P
 	xrange := math.Abs(xmax-xmin)
 	yrange := math.Abs(ymax-ymin)
 	zrange := math.Abs(zmax-zmin)
+
 	// Perform scaling ie multiply all pts by a const factor such that min is ~0 & max ~sizeX for X, sizeY for Y, size Z
 	//_, maxrange := MinMax(math.Abs(xmax-xmin), math.Abs(ymax-ymin), math.Abs(zmax-zmin))
 	scaleFactorX := float64(sizeX)/xrange
@@ -31,21 +32,15 @@ func ScalePoints(pts []models.Point, sizeX int, sizeY int, sizeZ int) []models.P
 	scaleFactorZ := float64(sizeZ)/zrange
 
 	// If min's < 0 - shift all axis by amount (math.Abs(min of x, y, z)) - Now all pts are >0
-	if (xmin < 0) {
-		translateX = translateX + scaleFactorX*xrange/2
-	}
-	if (ymin < 0) {
-		translateY = translateY + scaleFactorY*yrange/2
-	}
-	if (zmin < 0) {
-		translateZ = translateZ + scaleFactorZ*zrange/2
-	}
-	
+	translateX = (0 - xmin) 
+	translateY = (0 - ymin) 
+	translateZ = (0 - zmin) 
+
 	for idx, pt := range pts {
 		scaledPts[idx] = models.Point {
-			X: translateX + scaleFactorX * pt.X, 
-			Y: translateY + scaleFactorY * pt.Y,
-			Z: translateZ + scaleFactorZ * pt.Z,
+			X: (translateX + pt.X)*scaleFactorX, 
+			Y: (translateY + pt.Y)*scaleFactorY,
+			Z: (translateZ + pt.Z)*scaleFactorZ,
 			T: pt.T,
 		}
 	}

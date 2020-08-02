@@ -41,11 +41,11 @@ func GetDefaultVisualizeContext() VisualizeContext {
 	defaultVis := DefaultVisualization{}
 	defaultVis.vp = VisualizeParams {
 		Size: models.MapSize{
-			SizeX: 500,
-			SizeY: 250,
-			SizeZ: 250,				
+			SizeX: 750,
+			SizeY: 750,
+			SizeZ: 750,				
 		},
-		IgnoreAxis: "Y",
+		IgnoreAxis: "Z",
 	}
 	
 	return defaultVis

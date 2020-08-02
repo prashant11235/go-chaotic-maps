@@ -13,9 +13,8 @@ type PathVisualizer struct {
 
 func (pv PathVisualizer) Visualize(mapObj models.ChaoticMap, visctxt VisualizeContext, w http.ResponseWriter) {
 	pts := mapObj.GenerateMapPoints()
-	//fmt.Println(pts)
-	scaledPts := ScalePoints(pts, visctxt.VisualizeParams().Size.SizeX, visctxt.VisualizeParams().Size.SizeX, visctxt.VisualizeParams().Size.SizeX)
-	//fmt.Println(scaledPts)
+	scaledPts := ScalePoints(pts, visctxt.VisualizeParams().Size.SizeX, 
+		visctxt.VisualizeParams().Size.SizeY, visctxt.VisualizeParams().Size.SizeZ)
 	path := pv.GenPath(scaledPts, visctxt)
 
 	s := svg.New(w)
@@ -27,11 +26,11 @@ func (pv PathVisualizer) Visualize(mapObj models.ChaoticMap, visctxt VisualizeCo
 func (pv PathVisualizer) GenPath(pts []models.Point, visctxt VisualizeContext) (string) {
 	path := ""
 	if visctxt.VisualizeParams().IgnoreAxis == "X" {
-		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
+		path += "M " + fmt.Sprintf("%f", pts[0].Y) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
 	} else if visctxt.VisualizeParams().IgnoreAxis == "Y" {
 		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
 	} else if visctxt.VisualizeParams().IgnoreAxis == "Z" {
-		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Z) + " "
+		path += "M " + fmt.Sprintf("%f", pts[0].X) + "," + fmt.Sprintf("%f", pts[0].Y) + " "
 	}
 	
 	for _, pt := range pts {
