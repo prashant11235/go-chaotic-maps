@@ -29,7 +29,6 @@ func (cv CircleVisualizer) GenCircles(pts []models.Point, visctxt VisualizeConte
 	}
 }
 
-
 func NewCircleVisualizer() *CircleVisualizer {
 	return &CircleVisualizer{}
 }
