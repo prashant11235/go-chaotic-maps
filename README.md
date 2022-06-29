@@ -22,16 +22,16 @@ Uses SVGo for rendering SVGs
     
 | Map        | Image           | Space-dim  |
 | ------------- |:-------------:| -----:|
-| Lorenz      | ![Lorenz](./img/lorenz.png) | 3 |
-| Duffing      | ![Duffing](./img/duffingcont.png)      |   2 |
-| Thomas | ![Thomas](./img/thomas.png)      |    1 |
+| Lorenz      | <img src="./img/lorenz.png" width="200" height="200" /> | 3 |
+| Duffing      | <img src="./img/duffingcont.png" width="200" height="200" />      |   2 |
+| Thomas | <img src="./img/thomas.png" width="200" height="200" />      |    1 |
 
 
 ### Discrete Maps
 
 | Map        | Image           | Space-dim  |
 | ------------- |:-------------:| -----:|
-| Henon      | ![Henon](./img/henon.png) | 2 |
-| Kaplan-Yorke      | ![Kaplan Yorke](./img/kaplanyorke.png)      |   2 |
-| De-Jong | ![Peter De Jong](./img/peterdejong.png)      |    2 |
-| Duffing | ![Duffing](./img/duffing.png)      |    2 |
+| Henon      | <img src="./img/henon.png" width="200" height="200" /> | 2 |
+| Kaplan-Yorke      | <img src="./img/kaplanyorke.png" width="200" height="200" />      |   2 |
+| De-Jong | <img src="./img/peterdejong.png" width="200" height="200" />      |    2 |
+| Duffing | <img src="./img/duffing.png" width="200" height="200" />      |    2 |
